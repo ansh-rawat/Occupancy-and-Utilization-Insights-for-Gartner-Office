@@ -1,76 +1,120 @@
-Office Occupancy and Utilization Insights
-A cutting-edge solution leveraging computer vision and data visualization to optimize workspace usage and enhance operational decision-making.
+# Occupancy and Utilisation Insights for Gartner - DIH
 
-Key Features
-Advanced Detection: Accurate identification of individuals and groups using YOLOv8, bounding box proximity, area ratios, and pose estimation.
-Dynamic Adaptability: Parameter tuning for varying camera angles and perspectives, ensuring reliable results across scenarios.
-Comprehensive Analytics: Real-time density heatmaps visualizing occupancy patterns.
-Power BI Integration: Actionable dashboards for workspace utilization insights, powered by Cisco Meraki camera data.
+## Overview
 
-Demo Outputs
-Person and Group Detection
+This project is a proof-of-concept tool designed to analyze occupancy and group dynamics within Gartner's Sydney office. By leveraging computer vision, IoT devices, and Cisco's infrastructure, the project aims to track and optimize space utilization, understand collaboration patterns, and support data-driven decisions.
 
-Occupancy Heatmap
+The key focus is on integrating computer vision technology to detect and analyze groups, activities, and workspace usage patterns in 15-minute intervals while providing actionable insights through an intuitive dashboard.
 
-Power BI Dashboard
+## Objectives
 
-Getting Started
-Installation
-Clone the Repository
+### Core Goals
+1. *Group Detection and Counting*: Detect and count distinct groups using advanced computer vision techniques.
+2. *People Counting in Groups*: Identify the number of individuals within each group.
+3. *Zone-Based Analysis*: Divide office space into zones for granular analysis of activities and interactions.
+4. *15-Minute Interval Analysis*: Analyze data in short intervals to understand real-time occupancy and group dynamics.
+5. *Temporal Insights*: Study trends over longer periods (daily, weekly, monthly) to evaluate workspace performance.
+6. *Group Dynamics Analysis*: Provide insights into group formation, interaction, and evolution over time.
+7. *Dashboard Visualization*: Develop a user-friendly dashboard for real-time and historical data visualization.
 
-bash
-Copy code
-git clone https://github.com/your-username/office-occupancy.git
-cd office-occupancy
-Install Dependencies
+### Nice-to-Have Features
+- Advanced image analysis for subjective opinions and open-ended insights.
+- Integration with facility management and scheduling systems.
+- Predictive analytics for forecasting space utilization trends.
 
-bash
-Copy code
-pip install -r requirements.txt
-Prepare Input Data
+## Key Computer Vision Methodologies
 
-Place images in the test/ folder for analysis.
-Usage
-Run Detection
+### 1. Group Detection and Counting
+- *Bounding Box Proximity*:
+  - Calculated distances between bounding box centroids detected by YOLOv8.
+  - Applied thresholds to classify individuals into groups based on spatial proximity.
 
-bash
-Copy code
-python detect.py
-Outputs
+- *Pose-Based Gaze Analysis*:
+  - Utilized pose keypoints (e.g., eyes, nose) to determine gaze directions.
+  - Intersecting gaze vectors and angle thresholds (≤ 90°) identified interacting individuals.
 
-Detection Results: Saved as group_detection_output.jpg.
-Density Heatmap: Saved as density_heatmap.jpg.
-Run Logs: Found in the runs/detect/predict/ folder, tracking detection history and metrics.
-Project Structure
-plaintext
-Copy code
-office-occupancy/
-│
-├── test/                # Folder for input images
-├── runs/detect/predict/ # Folder for detection outputs and logs
-├── detect.py            # Main detection script
-├── utils.py             # Helper functions
-├── requirements.txt     # Required Python libraries
-├── assets/              # Images for README
-└── README.md            # Documentation
-Technologies Used
-Computer Vision: YOLOv8 for detection and YOLOv8-Pose for pose estimation.
-Programming: Python (OpenCV, NumPy, SciPy, Matplotlib).
-Visualization: Power BI for interactive dashboards.
-Hardware Integration: Cisco Meraki cameras for data capture.
-Results and Insights
-Accurate Detection: Robust grouping and individual identification using bounding box proximity, area ratios, and pose features.
-Dynamic Scalability: Easily adapts to various office setups and camera configurations.
-Actionable Data: Dashboards enabling better workspace planning and decision-making.
-Collaborators and Acknowledgments
-Korus Australia and Cisco for collaborative efforts and support.
-La Trobe University for facilitating the development of this project.
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+- *Bounding Box Area Comparison*:
+  - Compared bounding box sizes to filter out individuals at varying depths.
+  - Mitigated perspective distortion issues in camera views.
 
-Contact
-Feel free to reach out for queries or contributions:
-[Your Name]
+- *Graph-Based Grouping*:
+  - Modeled individuals as nodes in a graph, with edges based on proximity and gaze criteria.
+  - Used graph algorithms to identify distinct groups in real-time.
 
-GitHub: your-username
-Email: your-email@example.com
+### 2. Zone-Based Analysis
+- Divided the office into 14 distinct zones.
+- Analyzed occupancy, group activities, and interactions per zone during each interval.
+
+### 3. Temporal and Interval Analysis
+- Collected occupancy and interaction data in 15-minute intervals.
+- Aggregated insights to detect temporal trends, such as peak usage times and evolving group dynamics.
+
+## Technologies Used
+
+### Computer Vision
+- *YOLOv8*: Object detection and pose estimation for human tracking and group analysis.
+- *OpenCV*: For image processing and bounding box visualization.
+- *SciPy*: Distance and centroid calculations for bounding box proximity checks.
+- *NetworkX*: Graph-based analysis for identifying connected groups.
+
+### Data and Visualization
+- *AWS S3*: Cloud storage for captured images and analysis outputs.
+- *Power BI*: For creating interactive dashboards and reports.
+
+## Workflow
+
+### Step 1: Data Collection
+- *Image Capture*:
+  - Connected to IP cameras using RTSP streams.
+  - Captured snapshots and uploaded them to AWS S3.
+- *Dataset Preparation*:
+  - Annotated datasets with bounding boxes and pose keypoints for model training.
+
+### Step 2: Group Detection
+1. *Detection*:
+   - YOLOv8 detected humans and pose keypoints in each frame.
+2. *Grouping Logic*:
+   - Calculated proximity and gaze alignment to classify individuals into groups.
+   - Filtered out noise using bounding box size comparisons and temporal consistency checks.
+
+### Step 3: Dashboard and Reporting
+- *Power BI Visualization*:
+  - Displayed group dynamics, zone-level occupancy, and temporal trends.
+  - Provided heatmaps, KPIs, and detailed breakdowns for decision-making.
+
+## Challenges and Solutions
+
+### 1. Privacy and Security
+- Ensured all data collection was anonymized and compliant with relevant regulations.
+
+### 2. Handling Camera Distortion
+- Applied Digital Pan-Tilt-Zoom (DPTZ) corrections to reduce fisheye distortions.
+
+### 3. Occlusions and Crowds
+- Fine-tuned YOLOv8 to handle partial occlusions and overlapping individuals.
+
+## Future Enhancements
+
+1. *Predictive Analytics*: Integrate machine learning models to forecast occupancy patterns and optimize space allocation.
+2. *Environmental Data Integration*: Incorporate additional data sources such as temperature and noise levels for a holistic view of workspace utilization.
+3. *Enhanced Group Interaction Analysis*: Add emotion recognition and behavioral insights to refine group dynamics understanding.
+
+## Getting Started
+
+### Prerequisites
+- Python 3.8+
+- Installed dependencies (pip install -r requirements.txt)
+- Access to IP cameras and AWS credentials.
+
+### Running the System
+1. *Data Capture*:
+   bash
+   python capture_and_upload.py
+   
+2. *Group Detection*:
+   bash
+   python group_detection.py
+   
+3. *Dashboard Visualization*:
+   - Import processed data into Power BI.
+   - Use the dashboard template for insights.
